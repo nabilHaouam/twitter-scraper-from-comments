@@ -7,8 +7,8 @@ const {saveEntries} = require('./saveEntries')
 let responses = [];
 let usersEntries = [];
 let count = 0;
-const requestUrlStart = "https://twitter.com/i/api/graphql/V1ze5q3ijDS1VeLwLY0m7g/UserTweets?"
-async function setupRequestInterceptor(page,scrollInterval, username, maxScrolls) {
+const requestUrlStart = "https://twitter.com/i/api/graphql/-H4B_lJDEA-O_7_qWaRiyg/TweetDetail?"
+async function setupRequestInterceptorCommenters(page,scrollInterval, collectionName, maxScrolls) {
     
     console.log(scrollInterval) 
     page.setRequestInterception(true);
@@ -36,14 +36,18 @@ async function setupRequestInterceptor(page,scrollInterval, username, maxScrolls
         responses.push(responseData);
     
         if (responseData.parsedContent && responseData.parsedContent.data) {
-            const entries = responseData.parsedContent.data.user.result.timeline_v2.timeline.instructions.filter(entry => entry.type === 'TimelineAddEntries')
+            const entries = responseData.parsedContent.data.threaded_conversation_with_injections_v2.instructions.filter(entry => entry.type === 'TimelineAddEntries')
             .map(instruction => instruction.entries)
             .flat();
           //this to remove the top and bottom cursor entries because they are not users 
-          const filteredEntries = entries.filter(entry => !entry.entryId.startsWith('cursor-'));
+          const filteredEntries = entries.filter(entry => 
+            !entry.entryId.startsWith('cursor-') && !entry.entryId.startsWith('who-to-follow')
+          );
+
           usersEntries = usersEntries.concat(...filteredEntries);
           count++;
-          await saveEntries(username, filteredEntries);
+          
+          await saveEntries(collectionName, filteredEntries);
           if (count >= maxScrolls) {
               console.log(`Reached ${maxScrolls} scrolls. Stopping scrolling.`);
               clearInterval(scrollInterval);
@@ -55,5 +59,5 @@ async function setupRequestInterceptor(page,scrollInterval, username, maxScrolls
   }
 
   module.exports = {
-    setupRequestInterceptor: setupRequestInterceptor
+    setupRequestInterceptorCommenters: setupRequestInterceptorCommenters
 };

@@ -4,8 +4,8 @@ require('dotenv').config();
 const config = require('./config.json');
 const {authenticateToTwitter} = require('./twitterUtils/authenticateToTwitter.js')
 const {keepScrollingDown }= require('./twitterUtils/keepScrollingDown.js')
-const {navigateToProfile} = require('./twitterUtils/navigateToProfile.js')
-const {setupRequestInterceptor} = require('./twitterUtils/setupRequestInterceptor.js')
+const {navigateToPage} = require('./twitterUtils/navigateToPage.js')
+const {setupRequestInterceptorTweets} = require('./twitterUtils/setupRequestInterceptorTweets.js')
 
 
 let keepScrolling;
@@ -24,8 +24,9 @@ async function main() {
   }
   //authentication cookie
   await authenticateToTwitter(page, browser)
-  await navigateToProfile(username, page);
-  await setupRequestInterceptor(page,keepScrolling, username, config.tweetsMaxScrolls);
+  const profileUrl = `https://twitter.com/${username}`
+  await navigateToPage(username, page, profileUrl);
+  await setupRequestInterceptorTweets(page,keepScrolling, username, config.tweetsMaxScrolls);
 
   keepScrolling = await keepScrollingDown(page)
 }
