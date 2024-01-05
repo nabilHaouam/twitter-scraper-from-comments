@@ -4,5 +4,6 @@
     "scrollInterval": 10000,
     "tweetsMaxScrolls": 2,
     "commentsMaxScrolls" : 5,
-    "timeBetweenSearchQueries": 10000
+    "timeBetweenSearchQueries": 10000,
+    "timeBetweenOpeningPosts": 10000
   }

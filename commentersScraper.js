@@ -48,7 +48,7 @@ async function getCommenters(){
     const tweetsIds = await getTweetsIds()
     console.log(tweetsIds)
     for (const id of tweetsIds){
-        await sleep(10000)
+        await sleep(config.timeBetweenOpeningPosts)
         const browser = await puppeteer.launch({headless: config.headless});
         const page = await browser.newPage();  
         
