@@ -11,17 +11,17 @@ const {setupRequestInterceptorCommenters} = require('./twitterUtils/setupRequest
 async function getTweetsIds(){
     await dbModule.connectToMongoDB(mongoURI); 
     const db = await dbModule.getDb()
-    const tweets = await db.collection(config.username).findOne({ username: config.username })
+    const tweets = await db.collection(config.username).find().toArray()
    
     const tweetIds = []
-    for (const tweet of tweets.entries) {
-        console.log("itemContent: "+ tweet.content.itemContent)
-        if (tweet.content.itemContent){
-            const idStr = tweet.content.itemContent.tweet_results.result.legacy.id_str;
+    for (const tweet of tweets) {
+        console.log("itemContent: "+ tweet.entry.content.itemContent)
+        if (tweet.entry.content.itemContent){
+            const idStr = tweet.entry.content.itemContent.tweet_results.result.legacy.id_str;
             tweetIds.push(idStr)
         }
         else {
-            tweet.content.items.forEach(item => {
+            tweet.entry.content.items.forEach(item => {
                 const idStr = item["item"]["itemContent"]["tweet_results"]["result"]["legacy"]["id_str"];
                 tweetIds.push(idStr)
             });
