@@ -47,9 +47,10 @@ const collectionName = username+"Commenters"
 async function getCommenters(){
     const tweetsIds = await getTweetsIds()
     console.log(tweetsIds)
+    const browser = await puppeteer.launch({headless: config.headless});
     for (const id of tweetsIds){
         await sleep(config.timeBetweenOpeningPosts)
-        const browser = await puppeteer.launch({headless: config.headless});
+        
         const page = await browser.newPage();  
         
         //authentication cookie

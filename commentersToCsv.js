@@ -41,7 +41,7 @@ async function exportCollectionsToCsv() {
 }
 
 function organizeToCsv(jsonData) {
-  const result = jsonData.content.itemContent.tweet_results.result.core.user_results.result;
+  const result = jsonData.content.itemContent.user_results.result;
   const professional = result.professional;
   const entities = result.legacy.entities;
   const urlInfo = entities && entities.url && entities.url.urls[0];
