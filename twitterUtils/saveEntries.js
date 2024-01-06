@@ -3,30 +3,24 @@ require('dotenv').config();
 const mongoURI = process.env.MONGO_URI;
 const dbModule = require("../db.js");
 dbModule.connectToMongoDB(mongoURI);
+async function saveEntriesToDB(username, entries) {
+  try {
+    const db = await dbModule.getDb();
 
-async function saveEntriesToDB(username, entries ) {
-    try {
-      const db = await dbModule.getDb();
+    for (const entry of entries) {
       const collectionName = username.replace(/\s+/g, '_'); // Replace spaces with underscores
       const collection = await db.collection(collectionName);
-  
-      // Create or find the document using a unique identifier
-      const identifier = { username: username };
-      const existingDocument = await collection.findOne(identifier);
-  
-      if (existingDocument) {
-        // If the document already exists, update it by pushing new entries
-        await collection.updateOne(identifier, { $push: { entries: { $each: entries } } });
-      } else {
-        // If the document does not exist, create a new one
-        await collection.insertOne({ ...identifier, entries: entries });
-      }
-  
-      console.log(`${entries.length} Entries saved to MongoDB collection: ${collectionName}`);
-    } catch (error) {
-      console.error('Error saving entries to MongoDB:', error);
+
+      // Create a new document for each entry
+      const document = { username: username, entry: entry };
+      await collection.insertOne(document);
+
+      console.log(`Entry saved to MongoDB collection: ${collectionName}`);
     }
+  } catch (error) {
+    console.error('Error saving entries to MongoDB:', error);
   }
+}
 
 async function saveEntriesToFile(newEntries) {
     try {

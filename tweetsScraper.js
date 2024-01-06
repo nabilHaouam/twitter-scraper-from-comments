@@ -25,7 +25,7 @@ async function main() {
   //authentication cookie
   await authenticateToTwitter(page, browser)
   const profileUrl = `https://twitter.com/${username}`
-  await navigateToPage(username, page, profileUrl);
+  await navigateToPage( page, profileUrl);
   await setupRequestInterceptorTweets(page,keepScrolling, username, config.tweetsMaxScrolls);
 
   keepScrolling = await keepScrollingDown(page)
